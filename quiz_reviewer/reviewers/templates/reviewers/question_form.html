@@ -1,0 +1,44 @@
+{# question_form.html — add questions by hand. Shown by views.question_add. #}
+{# PURPOSE: one form for both question types; the choice boxes only matter for multiple choice. #}
+{% extends "base.html" %}
+{% block title %}Add question{% endblock %}
+{% block content %}
+<hgroup>
+  <h1>{{ reviewer.title }}</h1>
+  <p>Share link: <a href="{{ reviewer.get_absolute_url }}">{{ request.scheme }}://{{ request.get_host }}{{ reviewer.get_absolute_url }}</a></p>
+</hgroup>
+
+<div class="grid">
+  <section>
+    <h2>Add a question</h2>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      {{ form.text.label_tag }} {{ form.text }}
+      {{ form.question_type.label_tag }} {{ form.question_type }}
+      {{ form.answer.label_tag }} {{ form.answer }}
+      <fieldset>
+        <legend>Choices (multiple choice only)</legend>
+        {{ form.choice_0.label_tag }} {{ form.choice_0 }}
+        {{ form.choice_1.label_tag }} {{ form.choice_1 }}
+        {{ form.choice_2.label_tag }} {{ form.choice_2 }}
+        {{ form.choice_3.label_tag }} {{ form.choice_3 }}
+        {{ form.correct_choice.label_tag }} {{ form.correct_choice }}
+      </fieldset>
+      <button type="submit">Add question</button>
+    </form>
+    <p><a href="{% url 'reviewers:generate' reviewer.slug %}">…or let the AI draft questions</a></p>
+  </section>
+
+  <section>
+    <h2>Published questions ({{ questions.count }})</h2>
+    <ol>
+      {% for q in questions %}
+        <li>{{ q.text }} <span class="muted">({{ q.get_question_type_display }}{% if q.ai_generated %}, AI{% endif %})</span></li>
+      {% empty %}
+        <li class="muted">None yet.</li>
+      {% endfor %}
+    </ol>
+  </section>
+</div>
+{% endblock %}

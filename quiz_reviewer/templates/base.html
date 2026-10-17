@@ -1,0 +1,32 @@
+{# templates/base.html — the shared page frame. Every other template "extends" this one. #}
+{# PURPOSE: write the <head>, navigation and message area ONCE; pages only fill in {% block content %}. #}
+{# Styling comes from Pico CSS (one <link>), so we write almost no CSS of our own. #}
+{% load static %}  {# lets us write {% static '...' %} for files in /static #}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Quiz &amp; Reviewer{% endblock %}</title>
+  <link rel="icon" href="data:,">  {# empty icon: stops the browser asking for /favicon.ico #}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  {# BONUS STEP (after Part 4): our own polish on top of Pico. Remove this one line to see the plain version. #}
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body>
+  <nav class="container">
+    <ul><li><strong><a href="{% url 'reviewers:list' %}">Quiz &amp; Reviewer</a></strong></li></ul>
+    <ul>
+      <li><a href="{% url 'reviewers:create' %}">New reviewer</a></li>
+      <li><a href="/admin/">Admin</a></li>
+    </ul>
+  </nav>
+  <main class="container">
+    {# Flash messages set with messages.success(...) in views show up here once. #}
+    {% for message in messages %}
+      <article class="{{ message.tags }}">{{ message }}</article>
+    {% endfor %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

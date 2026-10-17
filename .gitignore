@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Local secrets and data (any depth)
+.env
+db.sqlite3
+
+# Node
+node_modules/
+
+# Rehearsal copy and organizer-only documents (kept locally, never published)
+test-run/
+slides/speaker guide/
+
+# Editor / OS / tooling
+~$*
+.DS_Store
+.playwright-mcp/

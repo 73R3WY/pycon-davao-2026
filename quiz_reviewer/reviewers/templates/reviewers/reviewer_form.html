@@ -1,0 +1,12 @@
+{# reviewer_form.html — "New reviewer" page. Shown by views.reviewer_create. #}
+{# PURPOSE: render ReviewerForm. {% csrf_token %} is REQUIRED on every POST form in Django. #}
+{% extends "base.html" %}
+{% block title %}New reviewer{% endblock %}
+{% block content %}
+<h1>New reviewer</h1>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_div }}   {# Django draws the <label> and <input> for each field #}
+  <button type="submit">Create reviewer</button>
+</form>
+{% endblock %}

@@ -1,0 +1,16 @@
+{# generate.html — the AI settings form. Shown by views.generate. #}
+{# PURPOSE: collect topic / count / mix / difficulty. Ranges are enforced by GenerateForm. #}
+{% extends "base.html" %}
+{% block title %}Generate with AI{% endblock %}
+{% block content %}
+<hgroup>
+  <h1>Generate questions with AI</h1>
+  <p>for <strong>{{ reviewer.title }}</strong>. Generated questions become <em>drafts</em> you must review before they are published.</p>
+</hgroup>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_div }}
+  <button type="submit">Ask the AI</button>
+</form>
+<p class="muted">Tip: set <code>FAKE_AI=1</code> in <code>.env</code> to practise without an API key.</p>
+{% endblock %}

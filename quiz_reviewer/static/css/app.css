@@ -1,0 +1,143 @@
+/*
+ * static/css/app.css — BONUS STEP (after Part 4): make it pretty.
+ *
+ * PURPOSE: purely cosmetic polish on top of Pico CSS. The app works exactly
+ * the same without this file; remove the <link> in templates/base.html to see
+ * the plain version. Everything is plain CSS: no JavaScript, no build step.
+ *
+ * Sections: 1 theme tokens · 2 layout · 3 cards · 4 flash messages
+ *           5 take page · 6 results · 7 review drafts · 8 buttons
+ *           9 animations (only when the visitor allows motion)
+ */
+
+/* 1. Theme tokens — same colours as the workshop slides.
+   Pico sets its own --pico-primary on these two selectors, so we must use the
+   same ones (a plain :root would lose the specificity contest). */
+:root:not([data-theme="dark"]),
+[data-theme="light"] {
+  /* Links: a darker teal than the slide mint so text stays readable (AA contrast). */
+  --pico-primary: #0f8f84;
+  --pico-primary-hover: #0b6f66;
+  --pico-primary-focus: rgba(46, 196, 182, .30);
+  /* Buttons: Pico 2 paints them with the *-background variables, not --pico-primary. */
+  --pico-primary-background: #1b1f3b;        /* deck navy, white text passes AA */
+  --pico-primary-border: #1b1f3b;
+  --pico-primary-hover-background: #2e3460;
+  --pico-primary-hover-border: #2e3460;
+  --pico-primary-inverse: #ffffff;
+  /* "Generate with AI" uses class="contrast"; paint it teal so AI actions stand out. */
+  --pico-contrast-background: #0f8f84;
+  --pico-contrast-border: #0f8f84;
+  --pico-contrast-hover-background: #0b6f66;
+  --pico-contrast-hover-border: #0b6f66;
+  --pico-contrast-inverse: #ffffff;
+  --ink: #1b1f3b;                     /* deep navy from the deck */
+  --mango: #ffb703;
+  --coral: #f4845f;
+  --mint: #2ec4b6;
+  --sky: #8ecae6;
+  --violet: #6c63ff;
+  --rose: #e63946;
+  --pico-border-radius: .75rem;
+}
+
+body {
+  background:
+    radial-gradient(1200px 500px at 10% -10%, rgba(46, 196, 182, .12), transparent 60%),
+    radial-gradient(900px 400px at 100% 0%, rgba(255, 183, 3, .10), transparent 55%),
+    var(--pico-background-color);
+}
+
+/* 2. Layout */
+nav.container { padding-top: .75rem; padding-bottom: .75rem; }
+nav strong a { color: var(--ink); text-decoration: none; letter-spacing: -.01em; }
+nav strong a::before { content: "◆ "; color: var(--mint); }
+hgroup h1 { letter-spacing: -.02em; }
+.muted { color: var(--pico-muted-color); font-size: .9em; }
+
+/* 3. Cards (every <article> that is not a flash message) */
+main article {
+  border: 1px solid rgba(27, 31, 59, .06);
+  box-shadow: 0 2px 10px rgba(27, 31, 59, .05);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+main article:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(27, 31, 59, .10);
+}
+article footer a[role="button"] { margin-right: .4rem; margin-bottom: .4rem; }
+
+/* 4. Flash messages (Django adds .success / .error / .info) */
+main > article.success,
+main > article.error,
+main > article.info {
+  border-left: 6px solid var(--mint);
+  background: rgba(46, 196, 182, .08);
+  padding: .9rem 1.1rem;
+  font-weight: 600;
+}
+main > article.error { border-left-color: var(--rose); background: rgba(230, 57, 70, .08); }
+main > article.info  { border-left-color: var(--sky);  background: rgba(142, 202, 230, .15); }
+
+/* 5. Take page: highlighted choice */
+/* (the template already numbers questions with forloop.counter, so no CSS badge) */
+form > article > strong { display: block; margin-bottom: .6rem; font-size: 1.05rem; }
+form > article label {
+  border-radius: .5rem; padding: .35rem .5rem; margin: .1rem -.5rem;
+  transition: background .15s ease;
+}
+form > article label:hover { background: rgba(46, 196, 182, .10); }
+form > article label:has(input:checked) { background: rgba(46, 196, 182, .18); font-weight: 600; }
+form > button[type="submit"] { box-shadow: 0 8px 20px rgba(46, 196, 182, .30); }
+
+/* 6. Results page */
+h1[class=""], main > h1 { letter-spacing: -.02em; }
+.correct, .wrong {
+  display: inline-block; padding: .25rem .7rem; border-radius: 999px;
+  font-weight: 600; font-size: .95em;
+}
+.correct { color: #0b6b3a; background: rgba(46, 196, 182, .18); }
+.wrong   { color: #8a1c25; background: rgba(230, 57, 70, .12); }
+
+/* 7. Review drafts */
+.draft { border-left: 5px solid var(--mango); }
+.draft:has(input:checked) { border-left-color: var(--mint); background: rgba(46, 196, 182, .05); }
+.draft:has(input:not(:checked)) { opacity: .6; }
+
+/* 8. Buttons */
+button, [role="button"] {
+  transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+}
+button:hover, [role="button"]:hover { transform: translateY(-1px); }
+button:active, [role="button"]:active { transform: translateY(0); }
+
+/* 9. Animations — only for people who have not asked for reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  @keyframes pop  { 0% { transform: scale(.85); opacity: 0; } 70% { transform: scale(1.04); } 100% { transform: scale(1); opacity: 1; } }
+  @keyframes flash-in-out {
+    0%   { opacity: 0; transform: translateY(-8px); }
+    8%   { opacity: 1; transform: none; }
+    85%  { opacity: 1; }
+    /* at the very end collapse the box too, so no blank gap is left behind */
+    100% { opacity: 0; transform: translateY(-8px); visibility: hidden; height: 0; padding: 0; margin: 0; border: 0; overflow: hidden; }
+  }
+
+  main { animation: rise .35s ease-out both; }
+
+  /* Staggered card entrance: each card arrives a little after the previous one */
+  main article { animation: rise .4s ease-out both; }
+  main article:nth-child(2) { animation-delay: .05s; }
+  main article:nth-child(3) { animation-delay: .10s; }
+  main article:nth-child(4) { animation-delay: .15s; }
+  main article:nth-child(5) { animation-delay: .20s; }
+  main article:nth-child(n + 6) { animation-delay: .25s; }
+
+  /* Flash messages slide in, stay 4 s, then fade away */
+  main > article.success, main > article.error, main > article.info {
+    animation: flash-in-out 4.5s ease forwards;
+  }
+
+  /* Score heading pops in on the results page */
+  main > h1 { animation: pop .45s cubic-bezier(.2, .8, .2, 1) both; }
+}

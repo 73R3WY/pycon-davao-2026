@@ -1,0 +1,35 @@
+{# take.html — the PUBLIC quiz page at /reviewer/<slug>/. Shown by views.take (GET). #}
+{# PURPOSE: loop over questions; radio buttons for multiple choice, a text box for direct answers. #}
+{# Each input is named q_<question id> so the view can find the answer in request.POST. #}
+{% extends "base.html" %}
+{% block title %}{{ reviewer.title }}{% endblock %}
+{% block content %}
+<hgroup>
+  <h1>{{ reviewer.title }}</h1>
+  <p>{{ reviewer.description }}</p>
+</hgroup>
+
+{% if not questions %}
+  <p>This reviewer has no published questions yet.</p>
+{% else %}
+<form method="post">
+  {% csrf_token %}
+  {% for question in questions %}
+    <article>
+      <strong>{{ forloop.counter }}. {{ question.text }}</strong>
+      {% if question.is_multiple_choice %}
+        {% for choice in question.choices.all %}
+          <label>
+            <input type="radio" name="q_{{ question.id }}" value="{{ choice.id }}" required>
+            {{ choice.text }}
+          </label>
+        {% endfor %}
+      {% else %}
+        <input type="text" name="q_{{ question.id }}" placeholder="Type your answer" required>
+      {% endif %}
+    </article>
+  {% endfor %}
+  <button type="submit">Submit answers</button>
+</form>
+{% endif %}
+{% endblock %}

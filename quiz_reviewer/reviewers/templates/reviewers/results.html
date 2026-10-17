@@ -1,0 +1,21 @@
+{# results.html — score page. Shown by views.take after a POST. #}
+{# PURPOSE: display score and, per question, what was submitted vs. the correct answer. #}
+{% extends "base.html" %}
+{% block title %}Results · {{ reviewer.title }}{% endblock %}
+{% block content %}
+<h1>Your score: {{ score }} / {{ total }}</h1>
+
+{% for r in results %}
+  <article>
+    <strong>{{ forloop.counter }}. {{ r.question.text }}</strong>
+    {% if r.correct %}
+      <p class="correct">✔ Correct — {{ r.correct_text }}</p>
+    {% else %}
+      <p class="wrong">✘ Not quite. Correct answer: {{ r.correct_text }}</p>
+    {% endif %}
+  </article>
+{% endfor %}
+
+<a href="{{ reviewer.get_absolute_url }}" role="button">Try again</a>
+<a href="{% url 'reviewers:list' %}" role="button" class="secondary">All reviewers</a>
+{% endblock %}

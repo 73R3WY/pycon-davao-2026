@@ -1,0 +1,5 @@
+# requirements.txt — the packages this project needs.
+# Install them with:  pip install -r requirements.txt
+django>=5.2,<6        # the web framework
+openai>=1.50           # official OpenAI Python SDK (Part 4)
+python-dotenv>=1.0     # loads OPENAI_API_KEY from the .env file

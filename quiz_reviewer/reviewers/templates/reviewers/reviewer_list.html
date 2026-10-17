@@ -1,0 +1,29 @@
+{# reviewer_list.html — home page. Shown by views.reviewer_list. #}
+{# PURPOSE: loop over every Reviewer and link to take / add questions / generate. #}
+{% extends "base.html" %}
+{% block content %}
+<hgroup>
+  <h1>Reviewers</h1>
+  <p>Create a reviewer, add questions (by hand or with AI), then share the link.</p>
+</hgroup>
+
+{% if not reviewers %}
+  <p>No reviewers yet. <a href="{% url 'reviewers:create' %}">Create the first one</a>.</p>
+{% endif %}
+
+{% for reviewer in reviewers %}
+  <article>
+    <header><strong>{{ reviewer.title }}</strong>
+      <span class="muted">· {{ reviewer.published_questions.count }} question(s)
+      {% if reviewer.draft_questions.count %}· {{ reviewer.draft_questions.count }} draft(s) to review{% endif %}</span>
+    </header>
+    <p>{{ reviewer.description|default:"(no description)" }}</p>
+    <footer>
+      <a href="{{ reviewer.get_absolute_url }}" role="button">Take it</a>
+      <a href="{% url 'reviewers:question_add' reviewer.slug %}" role="button" class="secondary">Add questions</a>
+      <a href="{% url 'reviewers:generate' reviewer.slug %}" role="button" class="contrast">Generate with AI</a>
+      {% if reviewer.draft_questions.count %}<a href="{% url 'reviewers:review_drafts' reviewer.slug %}">Review drafts</a>{% endif %}
+    </footer>
+  </article>
+{% endfor %}
+{% endblock %}

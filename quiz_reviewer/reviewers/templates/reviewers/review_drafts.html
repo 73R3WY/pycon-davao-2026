@@ -1,0 +1,34 @@
+{# review_drafts.html — human-in-the-loop screen. Shown by views.review_drafts. #}
+{# PURPOSE: tick the AI drafts you like, then Accept (publish) or Reject (delete). #}
+{% extends "base.html" %}
+{% block title %}Review drafts{% endblock %}
+{% block content %}
+<hgroup>
+  <h1>Review AI drafts</h1>
+  <p>{{ reviewer.title }} · {{ drafts.count }} waiting</p>
+</hgroup>
+
+{% if not drafts %}
+  <p>No drafts. <a href="{% url 'reviewers:generate' reviewer.slug %}">Generate some</a> or <a href="{{ reviewer.get_absolute_url }}">take the reviewer</a>.</p>
+{% else %}
+<form method="post">
+  {% csrf_token %}
+  {% for q in drafts %}
+    <article class="draft">
+      <label>
+        <input type="checkbox" name="question_ids" value="{{ q.id }}" checked>
+        <strong>{{ q.text }}</strong> <span class="muted">({{ q.get_question_type_display }})</span>
+      </label>
+      {% if q.is_multiple_choice %}
+        <ul>{% for c in q.choices.all %}<li>{% if c.is_correct %}<strong>✔ {{ c.text }}</strong>{% else %}{{ c.text }}{% endif %}</li>{% endfor %}</ul>
+      {% else %}
+        <p class="muted">Expected answer: {{ q.answer }}</p>
+      {% endif %}
+    </article>
+  {% endfor %}
+  {# Two submit buttons, same form: the view reads request.POST["action"]. #}
+  <button type="submit" name="action" value="accept">Accept selected</button>
+  <button type="submit" name="action" value="reject" class="secondary">Reject selected</button>
+</form>
+{% endif %}
+{% endblock %}
