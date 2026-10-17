@@ -24,8 +24,9 @@ load_dotenv(BASE_DIR / ".env")
 
 # Used by Django to sign cookies and forms. Fine for a workshop; in a real
 # deployment you would also load this from the environment.
-# Read from the environment when set; the default is fine for the workshop only.
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-workshop-only-change-me")
+# Read from the environment when set (an empty DJANGO_SECRET_KEY in .env counts as
+# unset); the built-in default is fine for the workshop only.
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY") or "django-insecure-workshop-only-change-me"
 
 # DEBUG=True shows friendly error pages with details. Never use in production.
 DEBUG = True
